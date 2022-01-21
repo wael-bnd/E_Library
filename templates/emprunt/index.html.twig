@@ -1,0 +1,56 @@
+{% extends 'admin-base.html.twig' %}
+
+{% block title %}Emprunts index{% endblock %}
+
+{% block body %}
+    <!-- Start wrapper-->
+    <div id="wrapper">
+    
+        {% include 'admin/sidebar.html.twig' %}
+        {% include 'admin/header.html.twig' %}
+    
+        <div class="clearfix"></div>	
+            <div class="content-wrapper">
+                <div class="container-fluid">
+                    <div class="col-lg-16">
+                        <div class="card">
+                           <div class="card-body">
+                            <div class="card-title">Table des emprunts :</div>
+    <div class="table-responsive">
+              <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Abonné</th>
+                    <th>Livres</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+            {% for emprunt in emprunts %}
+                <tr>
+                    <td>{{ emprunt.id }}</td>
+                    <td>{{ emprunt.user[0].nom }} {{ emprunt.user[0].prenom }}</td>
+                    <td>{% for livre in emprunt.livres %} - {{ livre.titre }} -{% endfor %}</td>
+                    <td>{{ emprunt.DataEmprunt ? emprunt.DataEmprunt|date('Y-m-d') : '' }}</td>
+                    
+                    <td>
+                        <a href="{{ path('mailer', {'id': emprunt.user[0].id}) }}" class="btn btn-light" >Confirmer</a>
+                        <a href="" class="btn btn-dark" >Annuler</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">no records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+ 
+    </div></div></div>
+    </div></div></div>
+{% endblock %}
