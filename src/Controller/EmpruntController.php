@@ -11,6 +11,7 @@ use App\Entity\Emprunt;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\LivreRepository;
 use App\Repository\EmpruntRepository;
+use Symfony\Component\HttpFoundation\Request;
 
 
 class EmpruntController extends AbstractController
@@ -74,12 +75,25 @@ class EmpruntController extends AbstractController
         $newEmprunt = $this->make_emprunt_data($session,$livresRepository,$emprunt);  
         $newEmprunt->setDataEmprunt(new \DateTime());
         $newEmprunt->addUser($user);
+        $newEmprunt->setIsConfirmed(false);
         // enregistrer l'emprunte : 
         $entityManager->persist($newEmprunt);
         $entityManager->flush();
         return $this->redirectToRoute('home');
     }
+    /**
+     * @Route("/{id}", name="emprunt_delete", methods={"POST"})
+     */
+    public function delete(Request $request, Emprunt $emprunt): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$emprunt->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($emprunt);
+            $entityManager->flush();
+        }
 
+        return $this->redirectToRoute('emprunt_index', [], Response::HTTP_SEE_OTHER);
+    }
    
 
 }
